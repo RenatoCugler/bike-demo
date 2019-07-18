@@ -1,10 +1,63 @@
-<h1> {{title }}</h1>
+  <div id="header">
+    <h2>COBI.Bike Hello World</h2>
+  </div>
+
+  <div class='my-content {{safety_style}}'>
+    <div id="speed">{{message }} 
+    </div>
+    <p>-</p>
+     <div id="safety_message">
+        {{safety_message }} <br><br>
+        {{safety_description}}
+    </div>
+    <div id="test">a</div>
+  </div>
+
+  <div id="cobi-thumbnail">
+    <img src="https://cdn.glitch.com/a8410dbe-26b4-49d1-9343-b70acf2ecb1a%2FCOBI_logo_neg_15mm_rgb_no-claim.png?1533568547538" width="150" height="50">
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+  <!-- COBI.JS -->
+  <script src="https://cdn.cobi.bike/cobi.js/0.44.0/cobi.js"></script>
+  <script>
+
+    // Authenticate your module
+    COBI.init('token');
+
+    //var misc = require('misc');
+
+    // Subscribe to a data service
+    COBI.rideService.speed.subscribe(function(speed) {      
+      $('#speed').html(`You are riding at ${ speed.toFixed(2) } m/s`);
+     });
+
+    //console.log("Adding %d to 10 gives us %d", misc.x, misc.addX(10));
+    //var add= await nodeServices.InvokeExportAsync<long>("./calculate.js", "add", 5, 6); 
+    //console.log("ADD "+ add);
+
+    COBI.mobile.location.subscribe(function(location) {      
+      console.log("LAT - "+ location.coordinate.latitude);
+      console.log("LONG - "+ location.coordinate.longitude);
+     
+      ajaxCall()
+     
+     });
+   
 
 
-<ul>
-  {{#each incidents}}
-    <li>{{this.title}}</li>
-  {{/each}}
-</ul>
-
-</div>
+  </script>
+  <script>
+    function ajaxCall(){
+      $.ajax({url: "http://localhost:3000/lat/50.11908/long/8.638901", success: function(result){
+        //do whatever you want with the returned data (in result)
+        //f.e. to update something on your web page, you want something like:
+        //document.getElementById("test").innerHTML = result;
+        console.log("renato");
+        $('#test').html(result);
+        //$('#speed').html(`You are riding at ${ speed.toFixed(2) } m/s`);
+        }})
+      }
+      //setInterval(ajaxCall,30000)
+</script>
