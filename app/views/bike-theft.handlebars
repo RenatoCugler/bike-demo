@@ -23,8 +23,6 @@
     // Authenticate your module
     COBI.init('token');
 
-    //var misc = require('misc');
-
     // Subscribe to a data service
     COBI.rideService.speed.subscribe(function(speed) {      
       $('#speed').html(`You are riding at ${ speed.toFixed(2) } m/s`);
@@ -42,26 +40,20 @@
       }
 
       if(_lat1==0){
-        console.log('Log - set lat/lon 1st time');
         _lat1 = location.coordinate.latitude;
         _lon1 = location.coordinate.longitude;
-        console.log('Log -new _lat1 '+ _lat1);
-        console.log('Log -new _lon1 '+ _lon1);
       }
 
       var dist = distance(_lat1, _lon1, location.coordinate.latitude, location.coordinate.longitude, 'K');
 
       //Only check for incidents after travelled distance >= 1 KM  
       if(dist >= 0.1 || _initial ){
-          console.log('Log - now check for incidents');
+          console.log('Checking for incidents update');
           updateMessage(location.coordinate.latitude,location.coordinate.longitude);
           _lat1 = location.coordinate.latitude;
           _lon1 = location.coordinate.longitude; 
           _initial=false;              
         }
-      else{
-        console.log('Log - do not check for incidents yet. Distance:'+ dist.toString());
-      }
     });
 
 
@@ -121,11 +113,6 @@
 
 function distance(lat1, lon1, lat2, lon2, unit) {
 	
-  console.log('lat1: '+lat1);
-  console.log('lon1: '+lon1);
-  console.log('lat2 '+lat2);
-  console.log('lon2 '+lon2);
-  console.log(unit);
   if ((lat1 == lat2) && (lon1 == lon2)) {
 		return 0;
 	}

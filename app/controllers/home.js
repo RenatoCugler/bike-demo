@@ -22,7 +22,6 @@ router.get('/lat/:lat/long/:long', (req, res, next) => {
     var incidents = data.incidents;
 
     var count = data.incidents.length;
-    //console.log("Incidents reported by the API: "+ count);
 
     var style;
     var message;
@@ -54,14 +53,6 @@ router.get('/lat/:lat/long/:long', (req, res, next) => {
     
   });
 });
-
-//router.param('lat', function (req, res, next, id) {
-  //req.display_message = "NEW";
-//  console.log("abcd");
-//})
-
-
-//app.use(router)
 
 router.get('/', (req, res, next) => {
      res.render('bike-theft', {
