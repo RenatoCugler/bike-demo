@@ -46,6 +46,11 @@ body {
   font-size: 30px;
 }
 
+#credits {
+  text-align: center;
+  font-size: 12px;
+}
+
 #cobi-thumbnail {
   position: absolute;
   bottom: 20px;

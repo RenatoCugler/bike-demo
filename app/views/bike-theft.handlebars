@@ -2,15 +2,12 @@
     <h2>COBI.Bike Hello World</h2>
   </div>
 
-  <div class='my-content {{safety_style}}'>
-    <div id="speed">{{message }} 
-    </div>
-    <p>-</p>
-     <div id="safety_message">
-        {{safety_message }} <br><br>
-        {{safety_description}}
-    </div>
-    <div id="test">a</div>
+  <div id='master' class='my-content {{display_style}}'>
+    <div id="speed">{{message }}</div>
+      <p>-</p>
+      <div id="safety_message"></div>
+      <p>-</p>
+      <div id='credit' ><font size="1">Credits: API provided by Bike Index - bikeindex.org</font></div>
   </div>
 
   <div id="cobi-thumbnail">
@@ -33,31 +30,121 @@
       $('#speed').html(`You are riding at ${ speed.toFixed(2) } m/s`);
      });
 
-    //console.log("Adding %d to 10 gives us %d", misc.x, misc.addX(10));
-    //var add= await nodeServices.InvokeExportAsync<long>("./calculate.js", "add", 5, 6); 
-    //console.log("ADD "+ add);
+ 
+    var _lat1 = 0 ;
+    var _lon1 = 0;
+    var _initial =true;
 
-    COBI.mobile.location.subscribe(function(location) {      
-      console.log("LAT - "+ location.coordinate.latitude);
-      console.log("LONG - "+ location.coordinate.longitude);
-     
-      ajaxCall()
-     
-     });
-   
+    COBI.mobile.location.subscribe(function(location) {   
+
+      if(typeof location.coordinate.latitude == "undefined" || location.coordinate.latitude == null || location.coordinate.longitude == null){
+        return;
+      }
+
+      if(_lat1==0){
+        console.log('Log - set lat/lon 1st time');
+        _lat1 = location.coordinate.latitude;
+        _lon1 = location.coordinate.longitude;
+        console.log('Log -new _lat1 '+ _lat1);
+        console.log('Log -new _lon1 '+ _lon1);
+      }
+
+      var dist = distance(_lat1, _lon1, location.coordinate.latitude, location.coordinate.longitude, 'K');
+
+      //Only check for incidents after travelled distance >= 1 KM  
+      if(dist >= 0.1 || _initial ){
+          console.log('Log - now check for incidents');
+          updateMessage(location.coordinate.latitude,location.coordinate.longitude);
+          _lat1 = location.coordinate.latitude;
+          _lon1 = location.coordinate.longitude; 
+          _initial=false;              
+        }
+      else{
+        console.log('Log - do not check for incidents yet. Distance:'+ dist.toString());
+      }
+    });
 
 
   </script>
   <script>
-    function ajaxCall(){
-      $.ajax({url: "http://localhost:3000/lat/50.11908/long/8.638901", success: function(result){
-        //do whatever you want with the returned data (in result)
-        //f.e. to update something on your web page, you want something like:
-        //document.getElementById("test").innerHTML = result;
-        console.log("renato");
-        $('#test').html(result);
-        //$('#speed').html(`You are riding at ${ speed.toFixed(2) } m/s`);
-        }})
-      }
-      //setInterval(ajaxCall,30000)
+    function updateMessage(lat,long){
+    $.ajax({
+        url: 'http://localhost:3000/lat/'+lat+'/long/'+long,
+        type: 'GET',
+        async: false,
+        cache: false,
+        timeout: 30000,
+        error: function(){
+            return true;
+        },
+        success: function(msg){ 
+           $('#safety_message').html(msg.display_message + '<br><br>' + msg.display_description);
+           document.getElementById("master").className = 'my-content '+ msg.display_style;
+            if (parseFloat(msg)){
+                return false;
+            } else {
+                return true;
+            }
+            setInterval(sendRequest, 5000); 
+        }
+    });
+    };
+
+    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    //:::                                                                         :::
+    //:::  This routine calculates the distance between two points (given the     :::
+    //:::  latitude/longitude of those points). It is being used to calculate     :::
+    //:::  the distance between two locations using GeoDataSource (TM) prodducts  :::
+    //:::                                                                         :::
+    //:::  Definitions:                                                           :::
+    //:::    South latitudes are negative, east longitudes are positive           :::
+    //:::                                                                         :::
+    //:::  Passed to function:                                                    :::
+    //:::    lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees)  :::
+    //:::    lat2, lon2 = Latitude and Longitude of point 2 (in decimal degrees)  :::
+    //:::    unit = the unit you desire for results                               :::
+    //:::           where: 'M' is statute miles (default)                         :::
+    //:::                  'K' is kilometers                                      :::
+    //:::                  'N' is nautical miles                                  :::
+    //:::                                                                         :::
+    //:::  Worldwide cities and other features databases with latitude longitude  :::
+    //:::  are available at https://www.geodatasource.com                         :::
+    //:::                                                                         :::
+    //:::  For enquiries, please contact sales@geodatasource.com                  :::
+    //:::                                                                         :::
+    //:::  Official Web site: https://www.geodatasource.com                       :::
+    //:::                                                                         :::
+    //:::               GeoDataSource.com (C) All Rights Reserved 2018            :::
+    //:::                                                                         :::
+    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    //Source: https://www.geodatasource.com/developers/javascript 
+
+function distance(lat1, lon1, lat2, lon2, unit) {
+	
+  console.log('lat1: '+lat1);
+  console.log('lon1: '+lon1);
+  console.log('lat2 '+lat2);
+  console.log('lon2 '+lon2);
+  console.log(unit);
+  if ((lat1 == lat2) && (lon1 == lon2)) {
+		return 0;
+	}
+	else {
+		var radlat1 = Math.PI * lat1/180;
+		var radlat2 = Math.PI * lat2/180;
+		var theta = lon1-lon2;
+		var radtheta = Math.PI * theta/180;
+		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+		if (dist > 1) {
+			dist = 1;
+		}
+		dist = Math.acos(dist);
+		dist = dist * 180/Math.PI;
+		dist = dist * 60 * 1.1515;
+		if (unit=="K") { dist = dist * 1.609344 }
+		if (unit=="N") { dist = dist * 0.8684 }
+		return dist;
+	}
+}
+
 </script>
