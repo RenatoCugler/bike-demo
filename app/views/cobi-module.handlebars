@@ -1,3 +1,5 @@
+  <link rel="stylesheet" href="/css/cobi.css">
+
   <div id="header">
     <h2>COBI.Bike Hello World</h2>
   </div>
@@ -7,14 +9,14 @@
       <p>-</p>
       <div id="safety_message"></div>
       <p>-</p>
-      <div id='credit' ><font size="1">Credits: API provided by Bike Index - bikeindex.org</font></div>
+      <div id='credit' ><center><font size="1">Credits: API provided by Bike Index - bikeindex.org</font></center></div>
   </div>
 
   <div id="cobi-thumbnail">
     <img src="https://cdn.glitch.com/a8410dbe-26b4-49d1-9343-b70acf2ecb1a%2FCOBI_logo_neg_15mm_rgb_no-claim.png?1533568547538" width="150" height="50">
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  
 
   <!-- COBI.JS -->
   <script src="https://cdn.cobi.bike/cobi.js/0.44.0/cobi.js"></script>
@@ -22,28 +24,25 @@
 
     // Authenticate your module
     COBI.init('token');
+    $('#speed').html('');
 
     // Subscribe to a data service
     COBI.rideService.speed.subscribe(function(speed) {      
       $('#speed').html(`You are riding at ${ speed.toFixed(2) } m/s`);
      });
 
- 
     var _lat1 = 0 ;
     var _lon1 = 0;
     var _initial =true;
 
     COBI.mobile.location.subscribe(function(location) {   
-
       if(typeof location.coordinate.latitude == "undefined" || location.coordinate.latitude == null || location.coordinate.longitude == null){
         return;
       }
-
       if(_lat1==0){
         _lat1 = location.coordinate.latitude;
         _lon1 = location.coordinate.longitude;
       }
-
       var dist = distance(_lat1, _lon1, location.coordinate.latitude, location.coordinate.longitude, 'K');
 
       //Only check for incidents after travelled distance >= 1 KM  
@@ -51,7 +50,8 @@
           console.log('Checking for incidents update');
           updateMessage(location.coordinate.latitude,location.coordinate.longitude);
           _lat1 = location.coordinate.latitude;
-          _lon1 = location.coordinate.longitude; 
+          _lon1 = location.coordinate.longitude;
+          //reset travelled distance so it will only execute after riding another KM.
           _initial=false;              
         }
     });

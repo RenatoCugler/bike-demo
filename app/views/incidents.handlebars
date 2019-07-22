@@ -1,0 +1,23 @@
+  <div id="header">
+    <h2>{{title}}</h2>
+  </div>
+
+  <div>
+    <div id="list" class="my-content-list">
+        <p>
+            <ul>
+                {{#each incidents}}
+                    <li><a href={{this.source}} target="_blank">{{this.title}} - {{this.address}} ({{this.date}}) </a></li>
+                {{/each}}
+            </ul>
+        </p>
+        
+    </div>
+  </div>
+
+
+
+
+
+
+
