@@ -46,7 +46,7 @@
       var dist = distance(_lat1, _lon1, location.coordinate.latitude, location.coordinate.longitude, 'K');
 
       //Only check for incidents after travelled distance >= 1 KM  
-      if(dist >= 0.1 || _initial ){
+      if(dist >= 0.2 || _initial ){
           console.log('Checking for incidents update');
           updateMessage(location.coordinate.latitude,location.coordinate.longitude);
           _lat1 = location.coordinate.latitude;

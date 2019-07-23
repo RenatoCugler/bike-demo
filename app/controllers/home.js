@@ -14,11 +14,11 @@ router.get('/lat/:lat/long/:long', (req, res, next) => {
   var url = 'https://bikewise.org:443/api/v2/incidents?page=1&incident_type=theft&proximity='+req.params.lat +' %2C'+req.params.long +'&proximity_square=2'
   console.log("API call: "+ url )
   unirest.get(url)
+
   .end(function (response) {
 
-    //var data= response.body;
-    var count = response.body.incidents.length;
-
+    var data= response.body;
+    var count = data.incidents.length;
     var style;
     var message;
     var description;
@@ -46,9 +46,9 @@ router.get('/lat/:lat/long/:long', (req, res, next) => {
       display_style: style,
       display_description: description
     });
-    
+
   });
-});
+}); 
 
 router.get('/', (req, res, next) => {
      res.render('cobi-module', {
