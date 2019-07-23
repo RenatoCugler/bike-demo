@@ -30,14 +30,14 @@ router.get('/:lat_long', (req, res, next) => {
     response.body.incidents.forEach(element => {
       newIncidents.push(new Incident(element));
     });
+  
     res.render('incidents', {
-      title: 'List of bikes reported stolen',
+      title = 'List of bikes reported stolen',
       incidents: newIncidents
     });
   });
 
 });
-
 
 router.get('/', (req, res, next) => {
   res.render('incidents', {

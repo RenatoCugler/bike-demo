@@ -19,5 +19,5 @@ Step 3: Run
 npm start
 ```
 
-### _Install COBI.bike DevKit Simulator and test your module
+### Install COBI.bike DevKit Simulator and test your module
 Follow the [instructions](https://stage.developer.bosch.com/web/cobi.bike-devkit/develop/test-your-module/browser) to install the COBI.bike Google Chrome Simulator and get familiar with the basics of module development on the COBI platform.
