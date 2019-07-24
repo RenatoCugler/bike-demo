@@ -32,7 +32,7 @@ router.get('/:lat_long', (req, res, next) => {
     });
   
     res.render('incidents', {
-      title = 'List of bikes reported stolen',
+      title : 'List of bikes reported stolen',
       incidents: newIncidents
     });
   });
